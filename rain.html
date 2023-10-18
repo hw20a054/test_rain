@@ -1,0 +1,269 @@
+<html>
+
+<head>
+  <title>three.js + ar.js</title>
+  <meta name="viewport" content="width=device-width, viewport-fit=cover, shrink-to-fit=no" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+    <canvas></canvas>
+  </div>
+  <!--❶ three.jsとAR.jsを読み込む-->
+  <script src="https://unpkg.com/three@0.127.0/build/three.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/3.3.3/three.js/build/ar.js"></script>
+  <script async>
+    const renderer = new THREE.WebGLRenderer({
+      canvas: document.querySelector('canvas'),
+      antialias: true,
+      alpha: true
+    });
+    const camera = new THREE.PerspectiveCamera();
+    const scene = new THREE.Scene();
+    const markerRoot = new THREE.Group();
+    const arToolkitContext = new THREEx.ArToolkitContext({
+      cameraParametersUrl: './camera.dat', // ❷ camera.datを読み込む
+      detectionMode: 'mono'
+    });
+    const arToolkitSource = new THREEx.ArToolkitSource({
+      sourceType: 'webcam'
+    });
+    const arMarkerControl = new THREEx.ArMarkerControls(arToolkitContext, markerRoot, {
+      type: 'pattern',
+      patternUrl: 'pattern.patt' // ❸ pattern.pattを読み込む
+    });
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    window.addEventListener('resize', handleResize, {
+      passive: true
+    });
+
+    arToolkitContext.init(() => {
+      camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
+    });
+
+    arToolkitSource.init(() => {
+      document.querySelector('.wrapper').appendChild(arToolkitSource.domElement); // ❹ videoタグを.wrapper配下に移動させる
+      setTimeout(handleResize, 400); // ❺ リサイズイベントを一度発火させる
+    });
+
+    scene.add(markerRoot);
+
+    const directionalLight = new THREE.DirectionalLight(0xFFFFFF);
+    directionalLight.position.set(1, 0, 1);
+    scene.add(directionalLight);
+
+    const sphere_geometry = new THREE.SphereGeometry(1.5, 64, 32);
+    const sphere_material = new THREE.MeshPhongMaterial({ color: 0xcdcdcd });
+
+    function createkonpeitou(c) {
+      const box_geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+      const box_material = new THREE.MeshPhongMaterial({ color: 0x000000 });
+      box_material.opacity = 0;
+      box_material.transparent = true;
+      const box = new THREE.Mesh(box_geometry, box_material);
+      const rain_geometry = new THREE.TetrahedronGeometry(0.15, 0);
+      const rain_material = new THREE.MeshPhongMaterial({ color: c });
+      const rain1 = new THREE.Mesh(rain_geometry, rain_material);
+      const rain2 = new THREE.Mesh(rain_geometry, rain_material);
+      rain2.rotation.y += 90 * (Math.PI / 180);
+      box.add(rain1);
+      box.add(rain2);
+      box.rotation.y += 22.5 * (Math.PI / 180);
+      box.rotation.z += 22.5 * (Math.PI / 180);
+
+      return box;
+    }
+
+    const sphere1 = new THREE.Mesh(sphere_geometry, sphere_material);
+    const sphere2 = new THREE.Mesh(sphere_geometry, sphere_material);
+    const sphere3 = new THREE.Mesh(sphere_geometry, sphere_material);
+    const sphere4 = new THREE.Mesh(sphere_geometry, sphere_material);
+    const sphere5 = new THREE.Mesh(sphere_geometry, sphere_material);
+    const sphere6 = new THREE.Mesh(sphere_geometry, sphere_material);
+    const sphere7 = new THREE.Mesh(sphere_geometry, sphere_material);
+    const sphere8 = new THREE.Mesh(sphere_geometry, sphere_material);
+    const sphere9 = new THREE.Mesh(sphere_geometry, sphere_material);
+    const sphere10 = new THREE.Mesh(sphere_geometry, sphere_material);
+    const sphere11 = new THREE.Mesh(sphere_geometry, sphere_material);
+    const sphere12 = new THREE.Mesh(sphere_geometry, sphere_material);
+
+    sphere1.position.set(3, 0, -3);
+    sphere2.position.set(2.4, 0.2, -2.4);
+    sphere3.position.set(1.7, 0.1, -4.7);
+    sphere4.position.set(0.9, -0.2, -4.2);
+    sphere5.position.set(0.6, -0.1, -2.8);
+    sphere6.position.set(0, -0.2, -3.2);
+    sphere7.position.set(-0.3, 0, -4.9);
+    sphere8.position.set(-1, 0.1, -3.5);
+    sphere9.position.set(-1.8, 0, -2.9);
+    sphere10.position.set(-2.2, -0.1, -2.3);
+    sphere11.position.set(-2.7, -0.2, -4.3);
+    sphere12.position.set(-3, 0, -3);
+
+    markerRoot.add(sphere1);
+    markerRoot.add(sphere2);
+    markerRoot.add(sphere3);
+    markerRoot.add(sphere4);
+    markerRoot.add(sphere5);
+    markerRoot.add(sphere6);
+    markerRoot.add(sphere7);
+    markerRoot.add(sphere8);
+    markerRoot.add(sphere9);
+    markerRoot.add(sphere10);
+    markerRoot.add(sphere11);
+    markerRoot.add(sphere12);
+
+
+    const rain1 = createkonpeitou(0x00ffff);
+    const rain2 = createkonpeitou(0xffffff);
+    const rain3 = createkonpeitou(0x00ff00);
+    const rain4 = createkonpeitou(0xff00ff);
+    const rain5 = createkonpeitou(0xffff00);
+    const rain6 = createkonpeitou(0xff8c00);
+    const rain7 = createkonpeitou(0x00ff00);
+    const rain8 = createkonpeitou(0xff00ff);
+    const rain9 = createkonpeitou(0xffffff);
+    const rain10 = createkonpeitou(0xff8c00);
+    const rain11 = createkonpeitou(0x00ffff);
+    const rain12 = createkonpeitou(0x00ff00);
+
+    rain1.position.set(3, 0, -2);
+    rain2.position.set(2.4, 0.4, -2);
+    rain3.position.set(1.7, 0.7, -2);
+    rain4.position.set(0.9, -0.2, -2);
+    rain5.position.set(0.6, -0.7, -2);
+    rain6.position.set(0, -0.5, -2);
+    rain7.position.set(-0.3, 0, -2);
+    rain8.position.set(-1, 0.8, -2);
+    rain9.position.set(-1.8, 0.5, -2);
+    rain10.position.set(-2.2, -0.4, -2);
+    rain11.position.set(-2.7, -0.2, -2);
+    rain12.position.set(-3, 0, -2);
+
+    markerRoot.add(rain1);
+    markerRoot.add(rain2);
+    markerRoot.add(rain3);
+    markerRoot.add(rain4);
+    markerRoot.add(rain5);
+    markerRoot.add(rain6);
+    markerRoot.add(rain7);
+    markerRoot.add(rain8);
+    markerRoot.add(rain9);
+    markerRoot.add(rain10);
+    markerRoot.add(rain11);
+    markerRoot.add(rain12);
+
+    function animate() {
+      requestAnimationFrame(animate);
+      rain1.position.z += 0.2 / 10;
+      rain2.position.z += 0.33 / 10;
+      rain3.position.z += 0.14 / 10;
+      rain4.position.z += 0.27 / 10;
+      rain5.position.z += 0.22 / 10;
+      rain6.position.z += 0.46 / 10;
+      rain7.position.z += 0.32 / 10;
+      rain8.position.z += 0.55 / 10;
+      rain9.position.z += 0.16 / 10;
+      rain10.position.z += 0.39 / 10;
+      rain11.position.z += 0.21 / 10;
+      rain12.position.z += 0.54 / 10;
+      rain1.rotation.x += Math.PI / 180;
+      rain1.rotation.z += Math.PI / 180;
+      rain2.rotation.x += Math.PI / 180;
+      rain2.rotation.z += Math.PI / 180;
+      rain3.rotation.x += Math.PI / 180;
+      rain3.rotation.z += Math.PI / 180;
+      rain4.rotation.x += Math.PI / 180;
+      rain4.rotation.z += Math.PI / 180;
+      rain5.rotation.x += Math.PI / 180;
+      rain5.rotation.z += Math.PI / 180;
+      rain6.rotation.x += Math.PI / 180;
+      rain6.rotation.z += Math.PI / 180;
+      rain7.rotation.x += Math.PI / 180;
+      rain7.rotation.z += Math.PI / 180;
+      rain8.rotation.x += Math.PI / 180;
+      rain8.rotation.z += Math.PI / 180;
+      rain9.rotation.x += Math.PI / 180;
+      rain9.rotation.z += Math.PI / 180;
+      rain10.rotation.x += Math.PI / 180;
+      rain10.rotation.z += Math.PI / 180;
+      rain11.rotation.x += Math.PI / 180;
+      rain11.rotation.z += Math.PI / 180;
+      rain12.rotation.x += Math.PI / 180;
+      rain12.rotation.z += Math.PI / 180;
+      if (rain1.position.z > 10) {
+        rain1.position.z = -2;
+      }
+      if (rain2.position.z > 10) {
+        rain2.position.z = -2;
+      }
+      if (rain3.position.z > 10) {
+        rain3.position.z = -2;
+      }
+      if (rain4.position.z > 10) {
+        rain4.position.z = -2;
+      }
+      if (rain5.position.z > 10) {
+        rain5.position.z = -2;
+      }
+      if (rain6.position.z > 10) {
+        rain6.position.z = -2;
+      }
+      if (rain7.position.z > 10) {
+        rain7.position.z = -2;
+      }
+      if (rain8.position.z > 10) {
+        rain8.position.z = -2;
+      }
+      if (rain9.position.z > 10) {
+        rain9.position.z = -2;
+      }
+      if (rain10.position.z > 10) {
+        rain10.position.z = -2;
+      }
+      if (rain11.position.z > 10) {
+        rain11.position.z = -2;
+      }
+      if (rain12.position.z > 10) {
+        rain12.position.z = -2;
+      }
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+
+
+    renderer.setAnimationLoop((delta) => {
+      if (arToolkitSource.ready) {
+        arToolkitContext.update(arToolkitSource.domElement);
+      }
+
+      renderer.render(scene, camera);
+    });
+
+    function handleResize() {
+      if (arToolkitSource.ready) {
+        arToolkitSource.onResize();
+        arToolkitSource.copySizeTo(renderer.domElement);
+      }
+
+      renderer.setPixelRatio(window.devicePixelRatio);
+    }
+  </script>
+</body>
+
+</html>
